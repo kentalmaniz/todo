@@ -7,21 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6466C3933A99578EF1DBEBB7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0EE7ED2E5945F9BFD5F234B3 /* FirebaseAuth */; };
+		66C780D043342931511DFB0B /* AuthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC134D62BF42723EB6D12DC /* AuthViews.swift */; };
+		E7EC89F3B27CB436CA0AC958 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07E43A4CEF584366E80B9D4B /* GoogleService-Info.plist */; };
 		FB3B7D522F97729100466F24 /* todoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3B7D512F97729100466F24 /* todoApp.swift */; };
 		FB3B7D542F97729100466F24 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3B7D532F97729100466F24 /* ContentView.swift */; };
 		FB3B7D562F97729400466F24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB3B7D552F97729400466F24 /* Assets.xcassets */; };
 		FB3B7D592F97729400466F24 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB3B7D582F97729400466F24 /* Preview Assets.xcassets */; };
 		FBE74F782F978A2100E0E4DD /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FBE74F772F978A2100E0E4DD /* FirebaseFirestore */; };
-		FBE74F7C2F978B0000E0E4DD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBE74F7B2F978B0000E0E4DD /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07E43A4CEF584366E80B9D4B /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8CC134D62BF42723EB6D12DC /* AuthViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AuthViews.swift; sourceTree = "<group>"; };
 		FB3B7D4E2F97729100466F24 /* todo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = todo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB3B7D512F97729100466F24 /* todoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = todoApp.swift; sourceTree = "<group>"; };
 		FB3B7D532F97729100466F24 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FB3B7D552F97729400466F24 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB3B7D582F97729400466F24 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		FBE74F7B2F978B0000E0E4DD /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +33,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBE74F782F978A2100E0E4DD /* FirebaseFirestore in Frameworks */,
+				6466C3933A99578EF1DBEBB7 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,11 +59,12 @@
 		FB3B7D502F97729100466F24 /* todo */ = {
 			isa = PBXGroup;
 			children = (
-				FBE74F7B2F978B0000E0E4DD /* GoogleService-Info.plist */,
 				FB3B7D512F97729100466F24 /* todoApp.swift */,
 				FB3B7D532F97729100466F24 /* ContentView.swift */,
 				FB3B7D552F97729400466F24 /* Assets.xcassets */,
 				FB3B7D572F97729400466F24 /* Preview Content */,
+				8CC134D62BF42723EB6D12DC /* AuthViews.swift */,
+				07E43A4CEF584366E80B9D4B /* GoogleService-Info.plist */,
 			);
 			path = todo;
 			sourceTree = "<group>";
@@ -90,6 +95,7 @@
 			name = todo;
 			packageProductDependencies = (
 				FBE74F772F978A2100E0E4DD /* FirebaseFirestore */,
+				0EE7ED2E5945F9BFD5F234B3 /* FirebaseAuth */,
 			);
 			productName = todo;
 			productReference = FB3B7D4E2F97729100466F24 /* todo.app */;
@@ -138,7 +144,7 @@
 			files = (
 				FB3B7D592F97729400466F24 /* Preview Assets.xcassets in Resources */,
 				FB3B7D562F97729400466F24 /* Assets.xcassets in Resources */,
-				FBE74F7C2F978B0000E0E4DD /* GoogleService-Info.plist in Resources */,
+				E7EC89F3B27CB436CA0AC958 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +157,7 @@
 			files = (
 				FB3B7D542F97729100466F24 /* ContentView.swift in Sources */,
 				FB3B7D522F97729100466F24 /* todoApp.swift in Sources */,
+				66C780D043342931511DFB0B /* AuthViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +369,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0EE7ED2E5945F9BFD5F234B3 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBE74F762F978A2100E0E4DD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
 		FBE74F772F978A2100E0E4DD /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FBE74F762F978A2100E0E4DD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

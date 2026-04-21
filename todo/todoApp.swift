@@ -24,12 +24,14 @@ struct TodoItem: Identifiable, Codable {
     var title: String
     var isCompleted: Bool
     var createdAt: Date
+    var userId: String
     
-    init(id: UUID = UUID(), title: String, isCompleted: Bool = false, createdAt: Date = Date()) {
+    init(id: UUID = UUID(), title: String, isCompleted: Bool = false, createdAt: Date = Date(), userId: String) {
         self.id = id
         self.title = title
         self.isCompleted = isCompleted
         self.createdAt = createdAt
+        self.userId = userId
     }
     
     /// Convert to Firestore dictionary
@@ -38,7 +40,8 @@ struct TodoItem: Identifiable, Codable {
             "id": id.uuidString,
             "title": title,
             "isCompleted": isCompleted,
-            "createdAt": Timestamp(date: createdAt)
+            "createdAt": Timestamp(date: createdAt),
+            "userId": userId
         ]
     }
     
@@ -48,10 +51,11 @@ struct TodoItem: Identifiable, Codable {
               let id = UUID(uuidString: idString),
               let title = data["title"] as? String,
               let isCompleted = data["isCompleted"] as? Bool,
-              let timestamp = data["createdAt"] as? Timestamp else {
+              let timestamp = data["createdAt"] as? Timestamp,
+              let userId = data["userId"] as? String else {
             return nil
         }
-        return TodoItem(id: id, title: title, isCompleted: isCompleted, createdAt: timestamp.dateValue())
+        return TodoItem(id: id, title: title, isCompleted: isCompleted, createdAt: timestamp.dateValue(), userId: userId)
     }
 }
 
@@ -62,8 +66,10 @@ class TodoViewModel: ObservableObject {
     private let db = Firestore.firestore()
     private let collectionName = "todos"
     private var listener: ListenerRegistration?
+    private let userId: String
     
-    init() {
+    init(userId: String) {
+        self.userId = userId
         listenToFirestore()
     }
     
@@ -71,48 +77,48 @@ class TodoViewModel: ObservableObject {
         listener?.remove()
     }
     
-    // MARK: - Firestore Real-time Listener
-    
     private func listenToFirestore() {
         listener = db.collection(collectionName)
-            .order(by: "createdAt", descending: true)
+            .whereField("userId", isEqualTo: userId)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
                 if let error = error {
-                    print("❌ Firestore listen error: \(error.localizedDescription)")
+                    print("Error fetching snapshot: \(error.localizedDescription)")
                     return
                 }
                 guard let documents = snapshot?.documents else { return }
                 
-                self.todos = documents.compactMap { doc in
-                    TodoItem.fromFirestore(doc.data())
-                }
+                // Sort locally to avoid needing a Firestore composite index
+                self.todos = documents.compactMap { TodoItem.fromFirestore($0.data()) }
+                    .sorted { $0.createdAt > $1.createdAt }
             }
     }
     
     // MARK: - CRUD Operations
     
-    /// Create — adds to Firestore, listener updates local array
+    /// Create
     func addTodo(title: String) {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        let newItem = TodoItem(title: trimmed)
+        let newItem = TodoItem(title: trimmed, userId: userId)
         
         db.collection(collectionName).document(newItem.id.uuidString).setData(newItem.firestoreData) { error in
             if let error = error {
-                print("❌ Error adding todo: \(error.localizedDescription)")
+                print("Error adding to Firestore: \(error.localizedDescription)")
             }
         }
     }
     
     /// Update - toggle completion
     func toggleCompletion(for item: TodoItem) {
-        let newValue = !item.isCompleted
+        var updatedItem = item
+        updatedItem.isCompleted.toggle()
+        
         db.collection(collectionName).document(item.id.uuidString).updateData([
-            "isCompleted": newValue
+            "isCompleted": updatedItem.isCompleted
         ]) { error in
             if let error = error {
-                print("❌ Error toggling todo: \(error.localizedDescription)")
+                print("Error updating completion status: \(error.localizedDescription)")
             }
         }
     }
@@ -126,28 +132,27 @@ class TodoViewModel: ObservableObject {
             "title": trimmed
         ]) { error in
             if let error = error {
-                print("❌ Error updating title: \(error.localizedDescription)")
+                print("Error updating title: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Delete from list by offsets
+    /// Delete
     func deleteTodo(at offsets: IndexSet, from list: [TodoItem]) {
         for index in offsets {
             let item = list[index]
-            deleteFromFirestore(item)
+            db.collection(collectionName).document(item.id.uuidString).delete { error in
+                if let error = error {
+                    print("Error deleting document: \(error.localizedDescription)")
+                }
+            }
         }
     }
     
-    /// Delete a single item
     func deleteTodoItem(_ item: TodoItem) {
-        deleteFromFirestore(item)
-    }
-    
-    private func deleteFromFirestore(_ item: TodoItem) {
         db.collection(collectionName).document(item.id.uuidString).delete { error in
             if let error = error {
-                print("❌ Error deleting todo: \(error.localizedDescription)")
+                print("Error deleting item: \(error.localizedDescription)")
             }
         }
     }
@@ -183,9 +188,7 @@ struct todoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                ContentView()
-            }
+            MainAuthView()
         }
     }
 }

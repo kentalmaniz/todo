@@ -9,7 +9,15 @@ import SwiftUI
 
 // MARK: - Main Content View
 struct ContentView: View {
-    @StateObject private var viewModel = TodoViewModel()
+    let userId: String
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject private var viewModel: TodoViewModel
+    
+    init(userId: String) {
+        self.userId = userId
+        _viewModel = StateObject(wrappedValue: TodoViewModel(userId: userId))
+    }
+    
     @State private var newTaskTitle = ""
     @State private var selectedTab: TaskFilter = .all
     @State private var editingItem: TodoItem? = nil
@@ -193,6 +201,25 @@ struct ContentView: View {
                         .foregroundColor(primaryText)
                 }
                 Spacer()
+                
+                // Logout button
+                Button {
+                    authViewModel.logout()
+                } label: {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(Color(red: 1.0, green: 0.4, blue: 0.4))
+                        .frame(width: 38, height: 38)
+                        .background(
+                            Circle()
+                                .fill(badgeBg)
+                                .overlay(
+                                    Circle()
+                                        .stroke(badgeStroke, lineWidth: 1)
+                                )
+                        )
+                }
+                .buttonStyle(PlainButtonStyle())
                 
                 // Dark/Light mode toggle
                 Button {
@@ -731,7 +758,8 @@ struct ContentView: View {
 // MARK: - Preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(userId: "preview_user_id")
             .preferredColorScheme(.dark)
+            .environmentObject(AuthViewModel())
     }
 }
